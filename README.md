@@ -9,7 +9,7 @@ Functionalities Admin panel:
 - Add, modify & delete categories
 - Add, edit & delete blog posts
 
-- Functionalities Blog:
+Functionalities Blog:
 
 - List of blogs
 - Blog overview
