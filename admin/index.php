@@ -1,4 +1,20 @@
+<?php
 
+	require_once '../src/controllers/AuthController.php';
+	$auth = new AuthController();
+
+	if (isset($_SESSION['user_id'])) {
+		header("Location: dashboard.php");
+		exit();
+	}
+
+	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+		$email = $_POST['email'];
+		$password = $_POST['password'];
+		$error = $auth->login($email, $password);
+	}
+	
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +43,10 @@
 									<div class="text-center">
 										<h1 class="h4 text-gray-900 mb-4">Dobrodošli!</h1>
 									</div>
-                                    <form class="user" method="post">
+                                    <form class="user" method="post" action="">
+										<?php if (isset($error)): ?>
+                                            <p style="color: red;"><?php echo $error; ?></p>
+                                        <?php endif; ?>
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user" placeholder="Vaša email adresa" name="email" required>
                                         </div>

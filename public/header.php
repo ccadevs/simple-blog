@@ -29,7 +29,7 @@
                         <a class="btn btn-outline-primary mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a class="btn btn-outline-primary mr-2" href="#"><i class="fab fa-instagram"></i></a>
                     </div>
-                    <a href="" class="btn btn-lg btn-block btn-primary mt-auto">Hire Me</a>
+                    <a href="./admin/" class="btn btn-lg btn-block btn-primary mt-auto">Admin panel</a>
                 </div>
                 <div class="sidebar-icon d-flex flex-column h-100 justify-content-center text-right">
                     <i class="fas fa-2x fa-angle-double-right text-primary"></i>

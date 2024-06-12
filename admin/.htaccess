@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /blog/admin/
+
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]

@@ -1,8 +1,9 @@
 RewriteEngine On
 RewriteBase /blog/public/
 
-# Allow access to assets
 RewriteCond %{REQUEST_URI} !^/blog/public/assets/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
+
+RewriteRule ^single/([^/]+)/?$ single.php?slug=$1 [L]
