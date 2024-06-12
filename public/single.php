@@ -1,23 +1,27 @@
 <?php
-require_once '../config/database.php';
-require_once '../src/models/Blog.php';
 
-$database = new Database();
-$db = $database->connect();
+    require_once '../config/database.php';
+    require_once '../src/models/Blogs.php';
 
-$blogModel = new Blog($db);
+    $database = new Database();
+    $db = $database->connect();
 
-if (!isset($_GET['slug'])) {
-    die('Blog post not found.');
-}
+    $blogModel = new Blogs($db);
 
-$blogPost = $blogModel->readSingle($_GET['slug']);
+    if (!isset($_GET['slug'])) {
+        die('Blog post not found.');
+    }
 
-if (!$blogPost) {
-    die('Blog post not found.');
-}
+    $slug = $_GET['slug'];
 
-include 'header.php';
+    $blogPost = $blogModel->readSingle($slug);
+
+    if (!$blogPost) {
+        die('Blog post not found.');
+    }
+
+    include 'header.php';
+    
 ?>
 <div class="container bg-white pt-5">
     <h1 class="mt-md-4 px-md-3 mb-2 py-2 bg-white font-weight-bold">

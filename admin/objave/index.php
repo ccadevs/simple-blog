@@ -25,6 +25,28 @@
             $blogPostModel->title = $_POST['title'];
             $blogPostModel->content = $_POST['content'];
             $blogPostModel->author = $_POST['author'];
+
+            if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
+                $allowedTypes = ['image/webp', 'image/png', 'image/jpg', 'image/jpeg'];
+                $maxSize = 250 * 1024; // 250KB
+                
+                if (in_array($_FILES['image']['type'], $allowedTypes) && $_FILES['image']['size'] <= $maxSize) {
+                    $uploadDir = '../../public/img/uploads/';
+                    $imageName = uniqid() . '.' . pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+                    $uploadFile = $uploadDir . $imageName;
+                    
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                        $blogPostModel->image = $imageName;
+                    } else {
+                        $errorMessage = "Došlo je do greške prilikom prijenosa slike.";
+                    }
+                } else {
+                    $errorMessage = "Nedozvoljeni format slike ili veličina prelazi 250KB.";
+                }
+            } else {
+                $blogPostModel->image = $_POST['current_image'];
+            }
+
             if ($blogPostModel->update()) {
                 $successMessage = "Objava je uspešno ažurirana.";
             } else {
@@ -153,6 +175,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Fotografija</th>
                                             <th>Naslov</th>
                                             <th>Autor</th>
                                             <th>Datum objave</th>
@@ -163,6 +186,7 @@
                                     <tfoot>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Fotografija</th>
                                             <th>Naslov</th>
                                             <th>Autor</th>
                                             <th>Datum objave</th>
@@ -174,12 +198,19 @@
                                         <?php while ($row = $blogPosts->fetch(PDO::FETCH_ASSOC)): ?>
                                             <tr>
                                                 <td><?php echo htmlspecialchars($row['id']); ?></td>
+                                                <td><img src="../../public/img/uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Blog Image" width="100"></td>
                                                 <td><?php echo htmlspecialchars($row['title']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['author']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['updated_at']); ?></td>
                                                 <td>
-                                                    <button type="button" class="btn btn-primary btn-sm edit-btn" data-id="<?php echo $row['id']; ?>" data-title="<?php echo $row['title']; ?>" data-content="<?php echo $row['content']; ?>" data-author="<?php echo $row['author']; ?>" data-toggle="modal" data-target="#editModal">
+                                                    <button type="button" class="btn btn-primary btn-sm edit-btn"
+                                                        data-id="<?php echo $row['id']; ?>"
+                                                        data-title="<?php echo $row['title']; ?>"
+                                                        data-content="<?php echo $row['content']; ?>"
+                                                        data-author="<?php echo $row['author']; ?>"
+                                                        data-image="<?php echo $row['image']; ?>"
+                                                        data-toggle="modal" data-target="#editModal">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                     <form method="post" style="display:inline;">
@@ -238,11 +269,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="editForm" method="post">
+                    <form id="editForm" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="edit-id">
                         <div class="form-group">
                             <label for="title">Naslov</label>
                             <input type="text" class="form-control" id="edit-title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Trenutna fotografija</label>
+                            <div>
+                                <img id="edit-current-image" src="" alt="Current Image" width="100">
+                            </div>
+                            <label for="image">Nova fotografija</label>
+                            <input type="file" class="form-control" id="edit-image" name="image">
                         </div>
                         <div class="form-group">
                             <label for="content">Sadržaj</label>
@@ -271,10 +310,12 @@
                 var title = $(this).data('title');
                 var content = $(this).data('content');
                 var author = $(this).data('author');
+                var image = $(this).data('image');
                 $('#edit-id').val(id);
                 $('#edit-title').val(title);
                 $('#edit-content').val(content);
                 $('#edit-author').val(author);
+                $('#edit-current-image').attr('src', '../../public/img/uploads/' + image);
             });
         });
     </script>

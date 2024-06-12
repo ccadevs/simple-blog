@@ -1,9 +1,12 @@
 RewriteEngine On
-RewriteBase /blog/public/
+RewriteBase /blog/
+
+RewriteCond %{REQUEST_URI} !^/blog/public/assets/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ single.php?slug=$1 [L]
 
 RewriteCond %{REQUEST_URI} !^/blog/public/assets/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
-
-RewriteRule ^single/([^/]+)/?$ single.php?slug=$1 [L]

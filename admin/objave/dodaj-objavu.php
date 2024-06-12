@@ -26,7 +26,26 @@
         $blogPostModel->author = $user->username;
         $blogPostModel->created_at = date('Y-m-d H:i:s');
         $blogPostModel->updated_at = date('Y-m-d H:i:s');
-
+    
+        if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+            $fileInfo = pathinfo($_FILES['image']['name']);
+            $fileExt = strtolower($fileInfo['extension']);
+            $fileSize = $_FILES['image']['size'];
+            if (in_array($fileExt, $allowed) && $fileSize <= 250000) {
+                $newFileName = uniqid() . '.' . $fileExt;
+                $uploadDir = '../../public/img/uploads/';
+                $uploadFile = $uploadDir . $newFileName;
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                    $blogPostModel->image = $newFileName;
+                } else {
+                    $errorMessage = "Došlo je do greške prilikom postavljanja slike.";
+                }
+            } else {
+                $errorMessage = "Dozvoljeni formati su: " . implode(', ', $allowed) . ". Max veličina je 250kb.";
+            }
+        }
+    
         if ($blogPostModel->create()) {
             $successMessage = "Objava je uspešno kreirana.";
         } else {
@@ -163,10 +182,16 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                            <div class="col-xs-12 col-sm-12 col-md-8">
                                                 <div class="form-group">
                                                     <strong>Opis</strong> 
                                                     <textarea class="form-control" name="content" rows="14"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class='form group col-md-4'>
+                                                <div class="form-group">
+                                                    <strong>Fotografija objekta</strong> 
+                                                    <input class="form-control-file" name="image" type="file">
                                                 </div>
                                             </div>
                                         </div>
