@@ -6,7 +6,7 @@
     require_once '../../src/models/User.php';
 
     if (!isset($_SESSION['user_id'])) {
-        header("Location: ../login.php");
+        header("Location: ./");
         exit();
     }
 
