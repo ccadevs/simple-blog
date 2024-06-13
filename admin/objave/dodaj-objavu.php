@@ -5,6 +5,7 @@
     require_once '../../config/database.php';
     require_once '../../src/models/User.php';
     require_once '../../src/models/Blogs.php';
+    require_once '../../src/models/Category.php';
 
     if (!isset($_SESSION['user_id'])) {
         header("Location: ../login.php");
@@ -18,15 +19,19 @@
     $user = $userModel->findUserById($_SESSION['user_id']);
 
     $blogPostModel = new Blogs($db);
+    $categoryModel = new Category($db);
+
+    $categories = $categoryModel->readAll();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $blogPostModel->slug = $_POST['slug'];
         $blogPostModel->title = $_POST['title'];
         $blogPostModel->content = $_POST['content'];
         $blogPostModel->author = $user->username;
+        $blogPostModel->category_id = $_POST['category_id'];
         $blogPostModel->created_at = date('Y-m-d H:i:s');
         $blogPostModel->updated_at = date('Y-m-d H:i:s');
-    
+
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
             $allowed = ['jpg', 'jpeg', 'png', 'webp'];
             $fileInfo = pathinfo($_FILES['image']['name']);
@@ -45,7 +50,7 @@
                 $errorMessage = "Dozvoljeni formati su: " . implode(', ', $allowed) . ". Max veličina je 250kb.";
             }
         }
-    
+
         if ($blogPostModel->create()) {
             $successMessage = "Objava je uspešno kreirana.";
         } else {
@@ -182,16 +187,27 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-xs-12 col-sm-12 col-md-8">
+                                            <div class="col-xs-6 col-sm-12 col-md-6">
                                                 <div class="form-group">
-                                                    <strong>Opis</strong> 
-                                                    <textarea class="form-control" name="content" rows="14"></textarea>
+                                                    <strong>Kategorija</strong>
+                                                    <select class="form-control" name="category_id" required>
+                                                        <?php while ($category = $categories->fetch(PDO::FETCH_ASSOC)): ?>
+                                                            <option value="<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['name']); ?></option>
+                                                        <?php endwhile; ?>
+                                                    </select>
                                                 </div>
                                             </div>
-                                            <div class='form group col-md-4'>
+                                            <div class="col-xs-6 col-sm-12 col-md-6">
                                                 <div class="form-group">
                                                     <strong>Fotografija objekta</strong> 
                                                     <input class="form-control-file" name="image" type="file">
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                                <div class="form-group">
+                                                    <strong>Opis</strong> 
+                                                    <textarea class="form-control" name="content" rows="14"></textarea>
                                                 </div>
                                             </div>
                                         </div>

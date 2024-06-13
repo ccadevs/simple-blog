@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2024 at 11:21 AM
+-- Generation Time: Jun 13, 2024 at 11:21 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,7 +31,9 @@ CREATE TABLE `blog_posts` (
   `id` int(11) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
+  `image` varchar(255) NOT NULL,
   `content` text NOT NULL,
+  `category_id` int(11) NOT NULL,
   `author` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -41,8 +43,9 @@ CREATE TABLE `blog_posts` (
 -- Dumping data for table `blog_posts`
 --
 
-INSERT INTO `blog_posts` (`id`, `slug`, `title`, `content`, `author`, `created_at`, `updated_at`) VALUES
-(1, 'test', 'Simple blog application', 'Uskoro zavrsavam jednostavan sistem za blog. Nisam uspeo brze, zbog posla.', 'Mile', '2024-06-12 09:00:22', '2024-06-12 09:02:24');
+INSERT INTO `blog_posts` (`id`, `slug`, `title`, `image`, `content`, `category_id`, `author`, `created_at`, `updated_at`) VALUES
+(1, 'test', 'Simple blog application', '666a067e762be.jpg', 'Uskoro zavrsavam jednostavan sistem za blog. Nisam uspeo brze, zbog posla.', 3, 'Mile', '2024-06-12 09:00:22', '2024-06-13 09:07:50'),
+(3, 'lorem-ipsum', 'Lorem Ipsum', '6669ff6aeea00.jpg', 'Lorem ipsum Dollor sit.', 4, 'Mile', '2024-06-12 20:04:58', '2024-06-13 09:07:48');
 
 -- --------------------------------------------------------
 
@@ -117,7 +120,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `blog_posts`
 --
 ALTER TABLE `blog_posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `categories`

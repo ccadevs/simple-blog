@@ -5,6 +5,7 @@
     require_once '../../config/database.php';
     require_once '../../src/models/User.php';
     require_once '../../src/models/Blogs.php';
+    require_once '../../src/models/Category.php';
 
     if (!isset($_SESSION['user_id'])) {
         header("Location: ../login.php");
@@ -18,6 +19,8 @@
     $user = $userModel->findUserById($_SESSION['user_id']);
 
     $blogPostModel = new Blogs($db);
+    $categoryModel = new Category($db);
+    $categories = $categoryModel->readAll();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (isset($_POST['update'])) {
@@ -25,6 +28,7 @@
             $blogPostModel->title = $_POST['title'];
             $blogPostModel->content = $_POST['content'];
             $blogPostModel->author = $_POST['author'];
+            $blogPostModel->category_id = $_POST['category_id'];
 
             if (isset($_FILES['image']) && $_FILES['image']['error'] == UPLOAD_ERR_OK) {
                 $allowedTypes = ['image/webp', 'image/png', 'image/jpg', 'image/jpeg'];
@@ -177,6 +181,7 @@
                                             <th>ID</th>
                                             <th>Fotografija</th>
                                             <th>Naslov</th>
+                                            <th>Kategorija</th>
                                             <th>Autor</th>
                                             <th>Datum objave</th>
                                             <th>Datum ažuriranja</th>
@@ -188,6 +193,7 @@
                                             <th>ID</th>
                                             <th>Fotografija</th>
                                             <th>Naslov</th>
+                                            <th>Kategorija</th>
                                             <th>Autor</th>
                                             <th>Datum objave</th>
                                             <th>Datum ažuriranja</th>
@@ -200,6 +206,7 @@
                                                 <td><?php echo htmlspecialchars($row['id']); ?></td>
                                                 <td><img src="../../public/img/uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Blog Image" width="100"></td>
                                                 <td><?php echo htmlspecialchars($row['title']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['category_name']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['author']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['updated_at']); ?></td>
@@ -209,6 +216,7 @@
                                                         data-title="<?php echo $row['title']; ?>"
                                                         data-content="<?php echo $row['content']; ?>"
                                                         data-author="<?php echo $row['author']; ?>"
+                                                        data-category-id="<?php echo $row['category_id']; ?>"
                                                         data-image="<?php echo $row['image']; ?>"
                                                         data-toggle="modal" data-target="#editModal">
                                                         <i class="fas fa-edit"></i>
@@ -276,6 +284,14 @@
                             <input type="text" class="form-control" id="edit-title" name="title" required>
                         </div>
                         <div class="form-group">
+                            <label for="category">Kategorija</label>
+                            <select class="form-control" id="edit-category" name="category_id" required>
+                                <?php while ($category = $categories->fetch(PDO::FETCH_ASSOC)): ?>
+                                    <option value="<?php echo htmlspecialchars($category['id']); ?>"><?php echo htmlspecialchars($category['name']); ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="image">Trenutna fotografija</label>
                             <div>
                                 <img id="edit-current-image" src="" alt="Current Image" width="100">
@@ -291,6 +307,7 @@
                             <label for="author">Autor</label>
                             <input type="text" class="form-control" id="edit-author" name="author" required>
                         </div>
+                        <input type="hidden" name="current_image" id="edit-current-image-name">
                         <button type="submit" class="btn btn-primary" name="update">Ažuriraj</button>
                     </form>
                 </div>
@@ -310,12 +327,15 @@
                 var title = $(this).data('title');
                 var content = $(this).data('content');
                 var author = $(this).data('author');
+                var categoryId = $(this).data('category-id');
                 var image = $(this).data('image');
                 $('#edit-id').val(id);
                 $('#edit-title').val(title);
                 $('#edit-content').val(content);
                 $('#edit-author').val(author);
+                $('#edit-category').val(categoryId);
                 $('#edit-current-image').attr('src', '../../public/img/uploads/' + image);
+                $('#edit-current-image-name').val(image);
             });
         });
     </script>

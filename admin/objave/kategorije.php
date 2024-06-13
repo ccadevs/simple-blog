@@ -86,7 +86,7 @@
                 <div class="collapse" data-parent="#accordionSidebar" id="collapseObjekti">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="../objave/">Sve novosti</a>
-                        <a class="collapse-item" href="../objave/dodaj-blog">Dodajte novost</a>
+                        <a class="collapse-item" href="../objave/dodaj-objavu">Dodajte novost</a>
                         <h6 class="collapse-header">Kategorije</h6>
                         <a class="collapse-item" href="../objave/kategorije">Sve kategorije</a>
                         <a class="collapse-item" href="../objave/dodaj-kategoriju">Dodajte kategoriju</a>

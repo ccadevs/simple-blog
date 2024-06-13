@@ -9,7 +9,7 @@
     $blogModel = new Blogs($db);
     $blogPosts = $blogModel->readAll();
 
-    include 'header.php';
+    include './include/header.php';
 
 ?>
 <div class="container bg-white pt-5">
@@ -25,6 +25,7 @@
                 <div class="d-flex mb-3">
                     <small class="mr-2 text-muted"><i class="fa fa-calendar-alt"></i> <?php echo htmlspecialchars($row['created_at']); ?></small>
                     <small class="mr-2 text-muted"><i class="fa fa-user"></i> <?php echo htmlspecialchars($row['author']); ?></small>
+                    <small class="mr-2 text-muted"><i class="fa fa-folder"></i> <?php echo htmlspecialchars($row['category_name']); ?></small>
                 </div>
                 <p>
                     <?php echo htmlspecialchars(substr($row['content'], 0, 150)) . '...'; ?>
@@ -35,4 +36,4 @@
     <?php endwhile; ?>
 </div>
 
-<?php include 'footer.php'; ?>
+<?php include './include/footer.php'; ?>
